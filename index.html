@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Life Dashboard</title>
+  <link rel="stylesheet" href="style.css" />
+  <script>
+    /* Apply saved theme before paint to avoid flash */
+    (function(){
+      const t = localStorage.getItem('theme');
+      if (t) document.documentElement.setAttribute('data-theme', t);
+    })();
+  </script>
+</head>
+<body>
+
+  <!-- ───── HEADER / CLOCK ───── -->
+  <header class="header">
+    <!-- theme toggle -->
+    <button class="theme-toggle" id="theme-toggle" aria-label="Toggle light/dark mode" title="Toggle light/dark mode">
+      <span class="theme-icon">🌙</span>
+    </button>
+
+    <div class="greeting-wrap">
+      <div class="greeting" id="greeting">Good morning</div>
+      <button class="btn-icon btn-icon-edit greeting-edit-btn" id="greeting-edit-btn" title="Set your name" aria-label="Set your name">✏️</button>
+    </div>
+
+    <!-- name input row (hidden until editing) -->
+    <div class="greeting-input-wrap" id="greeting-input-wrap" style="display:none">
+      <input
+        type="text"
+        id="name-input"
+        class="text-input name-input"
+        placeholder="Your name…"
+        maxlength="40"
+        autocomplete="off"
+      />
+      <button class="btn btn-primary btn-sm" id="name-save">Save</button>
+      <button class="btn btn-ghost btn-sm"   id="name-cancel">Cancel</button>
+    </div>
+
+    <!-- shown when no name is set yet -->
+    <button class="name-prompt" id="name-prompt">✏️ Set your name</button>
+
+    <div class="clock" id="clock">00:00:00</div>
+    <div class="date"  id="date">Monday, January 1</div>
+  </header>
+
+  <!-- ───── MAIN GRID ───── -->
+  <main class="grid">
+
+    <!-- TO-DO LIST -->
+    <section class="card" id="todo-card">
+      <h2 class="card-title">
+        <span class="card-icon">✅</span> To-Do List
+        <span class="task-count" id="task-count">0 / 0</span>
+      </h2>
+
+      <form class="add-form" id="todo-form">
+        <input
+          type="text"
+          id="todo-input"
+          class="text-input"
+          placeholder="Add a new task…"
+          maxlength="120"
+          autocomplete="off"
+        />
+        <button type="submit" class="btn btn-primary">Add</button>
+      </form>
+
+      <ul class="todo-list" id="todo-list">
+        <!-- tasks injected by JS -->
+      </ul>
+
+      <div class="empty-state" id="todo-empty">No tasks yet — add one above!</div>
+
+      <button class="btn btn-ghost btn-sm clear-done" id="clear-done">
+        Clear completed
+      </button>
+    </section>
+
+    <!-- FOCUS TIMER -->
+    <section class="card" id="timer-card">
+      <h2 class="card-title">
+        <span class="card-icon">🎯</span> Focus Timer
+      </h2>
+
+      <div class="mode-tabs" id="mode-tabs">
+        <button class="mode-tab active" data-minutes="25" data-label="Focus">Focus 25</button>
+        <button class="mode-tab" data-minutes="10" data-label="Long Break">Break 10</button>
+        <button class="mode-tab" data-minutes="5"  data-label="Short Break">Break 5</button>
+      </div>
+
+      <!-- custom duration row — only visible on Focus tab when stopped -->
+      <div class="custom-duration" id="custom-duration">
+        <label class="custom-duration-label" for="custom-mins">Custom focus time</label>
+        <div class="custom-duration-row">
+          <input
+            type="number"
+            id="custom-mins"
+            class="text-input custom-mins-input"
+            min="1" max="120"
+            placeholder="min"
+            aria-label="Custom minutes"
+          />
+          <span class="custom-duration-unit">min</span>
+          <button class="btn btn-primary btn-sm" id="custom-mins-set">Set</button>
+        </div>
+      </div>
+
+      <div class="timer-ring-wrap">
+        <svg class="timer-ring" viewBox="0 0 120 120">
+          <circle class="ring-track" cx="60" cy="60" r="52" />
+          <circle class="ring-progress" id="ring-progress" cx="60" cy="60" r="52" />
+        </svg>
+        <div class="timer-display" id="timer-display">25:00</div>
+      </div>
+
+      <div class="timer-controls">
+        <button class="btn btn-primary" id="timer-start">Start</button>
+        <button class="btn btn-ghost"   id="timer-reset">Reset</button>
+      </div>
+
+      <div class="session-info">
+        Session <span id="session-count">1</span>
+        <span class="session-label" id="session-label">— Focus</span>
+      </div>
+    </section>
+
+    <!-- QUICK LINKS -->
+    <section class="card" id="links-card">
+      <h2 class="card-title">
+        <span class="card-icon">🔗</span> Quick Links
+      </h2>
+
+      <form class="add-form" id="link-form">
+        <input
+          type="text"
+          id="link-label"
+          class="text-input"
+          placeholder="Label (e.g. GitHub)"
+          maxlength="40"
+          autocomplete="off"
+        />
+        <input
+          type="url"
+          id="link-url"
+          class="text-input"
+          placeholder="https://…"
+          autocomplete="off"
+        />
+        <button type="submit" class="btn btn-primary">Add</button>
+      </form>
+
+      <div class="links-grid" id="links-grid">
+        <!-- link chips injected by JS -->
+      </div>
+
+      <div class="empty-state" id="links-empty">No links yet — add one above!</div>
+    </section>
+
+  </main>
+
+  <!-- TOAST NOTIFICATION -->
+  <div class="toast" id="toast"></div>
+
+  <!-- TIMER DONE SOUND (silent AudioContext bell) -->
+  <script src="app.js"></script>
+</body>
+</html>
